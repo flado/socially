@@ -31,26 +31,15 @@ angular.module('socially').directive('partiesList', function() {
           return Parties.find({}, {
             sort: {
               name: 1
-            } //this.getReactively('sort')
+            }
           });
         },
-
         currentUser: () => {
           return Meteor.user();
         },
-
-        /*page: () => {
-          return this.getReactively('page');
-        },*/
-
         partiesCount: () => {
             return Counts.get('numberOfParties');
           }
-          /*,
-
-                  perPage: () => {
-                    return this.getReactively('perPage');
-                  }*/
       });
 
       this.updateSort = () => {
