@@ -1,0 +1,10 @@
+{
+  "globals": {
+    "Meteor": true,
+    "Mongo": true,
+    "Counts": true,
+    "angular": true,
+    "_": true,
+    "Parties": true
+  }
+}

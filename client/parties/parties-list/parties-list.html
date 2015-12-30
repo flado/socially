@@ -1,0 +1,50 @@
+<div class="container">
+  <div class="row">
+
+    <div class="col-lg-8" ng-if="partiesList.currentUser">
+      <form>
+        <label>Party Name: </label>
+        <input type="text" ng-model="partiesList.newParty.name" />
+        <br/>
+        <label>Description: </label>
+        <input type="text" ng-model="partiesList.newParty.description" />
+        <br/>
+        <label>Public Party?</label>
+        <input type="checkbox" ng-model="partiesList.newParty.public" />
+        <br/>
+        <button ng-click="partiesList.addParty()">Add Party!</button>
+      </form>
+    </div>
+
+    <div class="col-lg-9">
+      <h1>Parties:</h1>
+      <div>
+        <input type="search" ng-model="partiesList.searchText" placeholder="Search" />
+        <select ng-model="partiesList.orderProperty" ng-change="partiesList.updateSort()">
+          <option value="1">Ascending</option>
+          <option value="-1">Descending</option>
+        </select>
+      </div>
+      <div class="panel panel-default">
+        <div class="panel-body">
+          <ul>
+            <li dir-paginate="party in partiesList.parties | itemsPerPage: partiesList.perPage" total-items="partiesList.partiesCount">
+              <!-- <li ng-repeat="party in partiesList.parties"> -->
+              <span ng-if="partiesList.currentUser && party.owner === partiesList.currentUser._id">
+                <a ui-sref="partyDetails({partyId: party._id})">{{party.name}}</a>
+              </span>
+              <span ng-if="!partiesList.currentUser || (partiesList.currentUser && party.owner !== partiesList.currentUser._id)">
+                {{party.name}}
+              </span>@ ( {{party.username}} )
+              <p>{{party.description}}</p>
+              <button ng-click="partiesList.removeParty(party)" ng-if="partiesList.currentUser && party.owner === partiesList.currentUser._id"> X </button>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </div>
+    <div>
+      <dir-pagination-controls on-page-change="partiesList.pageChanged(newPageNumber)"  boundary-links="true"></dir-pagination-controls>
+    </div>
+  </div>
+</div>
