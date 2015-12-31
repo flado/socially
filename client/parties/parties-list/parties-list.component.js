@@ -42,9 +42,9 @@ angular.module('socially').directive('partiesList', function() {
           }
       });
 
-      this.updateSort = () => {
+      this.updateSort = (val) => {
         this.sort = {
-          name: parseInt(this.orderProperty)
+          name: parseInt(/*this.orderProperty*/val) //1 or -1
         };
       };
 
