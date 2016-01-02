@@ -65,9 +65,10 @@
               </span>
                 <span ng-if="!partiesList.currentUser || (partiesList.currentUser && party.owner !== partiesList.currentUser._id)">
                 {{party.name}}
-              </span>@ ( {{party.username}} )
+              </span>
                 <p>{{party.description}}</p>
                 <button ng-click="partiesList.removeParty(party)" ng-if="partiesList.currentUser && party.owner === partiesList.currentUser._id"> X </button>
+                <p> <small>Posted by <i>{{partiesList.getPartyCreator(party) | displayName}}</i></small></p>
               </li>
             </ul>
           </div>
