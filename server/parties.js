@@ -24,6 +24,14 @@ Meteor.publish('parties', function(options, searchString) { //a function to defi
           $exists: true
         }
       }]
+    }, {
+      $and: [{
+        invited: this.userId
+      }, {
+        invited: {
+          $exists: true
+        }
+      }]
     }]
   };
 

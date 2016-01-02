@@ -61,13 +61,52 @@
             <ul>
               <li dir-paginate="party in partiesList.parties | itemsPerPage: partiesList.perPage" total-items="partiesList.partiesCount">
                 <span ng-if="partiesList.currentUser && party.owner === partiesList.currentUser._id">
-                <a ui-sref="partyDetails({partyId: party._id})">{{party.name}}</a>
+                <a ui-sref="partyDetails({partyId: party._id})">{{party | displayPartyName}}</a>
               </span>
                 <span ng-if="!partiesList.currentUser || (partiesList.currentUser && party.owner !== partiesList.currentUser._id)">
-                {{party.name}}
+                {{party | displayPartyName}}
               </span>
                 <p>{{party.description}}</p>
                 <button ng-click="partiesList.removeParty(party)" ng-if="partiesList.currentUser && party.owner === partiesList.currentUser._id"> X </button>
+                <div class="btn-group" ng-if="partiesList.currentUser">
+                  <button type="button" class="btn btn-default" ng-click="partiesList.rsvp(party._id, 'yes')">I'm going</button>
+                  <button type="button" class="btn btn-default" ng-click="partiesList.rsvp(party._id, 'maybe')">Maybe</button>
+                  <button type="button" class="btn btn-default" ng-click="partiesList.rsvp(party._id, 'no')">No</button>
+                </div>
+                <div>
+                  <label>Who is coming:</label>
+                  <div>Yes: <span class="badge">{{ '' + (party.rsvps | filter:{rsvp:'yes'}).length }} </span>
+                    <ul>
+                      <li ng-repeat="rsvp in party.rsvps | filter:{rsvp:'yes'}">
+                        {{ partiesList.getUserById(rsvp.user) | displayName }}
+                      </li>
+                    </ul>
+                  </div>
+                  <div>Maybe: <span class="badge"> {{ '' + (party.rsvps | filter:{rsvp:'maybe'}).length }}</span>
+                    <ul>
+                      <li ng-repeat="rsvp in party.rsvps | filter:{rsvp:'maybe'}">
+                        {{ partiesList.getUserById(rsvp.user) | displayName }}
+                      </li>
+                    </ul>
+                  </div>
+                  <div>No: <span class="badge"> {{ '' + (party.rsvps | filter:{rsvp:'no'}).length }}</span>
+                    <ul>
+                      <li ng-repeat="rsvp in party.rsvps | filter:{rsvp:'no'}">
+                        {{ partiesList.getUserById(rsvp.user) | displayName }}
+                      </li>
+                    </ul>
+                  </div>
+                </div>
+                <span ng-init="invitedUsers = partiesList.outstandingInvitations(party)"></span>
+                <div ng-if="invitedUsers.length > 0">
+                  <br>
+                  <ul>
+                    <label>Users who not responded:</label>
+                    <li ng-repeat="invitedUser in invitedUsers">
+                      {{ invitedUser | displayName }}
+                    </li>
+                  </ul>
+                </div>
                 <p> <small>Posted by <i>{{partiesList.getPartyCreator(party) | displayName}}</i></small></p>
               </li>
             </ul>

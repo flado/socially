@@ -3,8 +3,10 @@
     "Meteor": true,
     "Mongo": true,
     "Counts": true,
+    "Email": true,
     "angular": true,
     "_": true,
+    "check": true,
     "Parties": true
   }
 }

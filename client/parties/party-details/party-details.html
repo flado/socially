@@ -41,6 +41,7 @@
           <ul class="list-group">
             <li class="list-group-item" ng-repeat="user in partyDetails.users | uninvited:partyDetails.party">
               {{ user | displayName }}
+              <button ng-click="partyDetails.invite(user)">Invite</button>
             </li>
           </ul>
         </div>
