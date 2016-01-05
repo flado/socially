@@ -11,7 +11,7 @@
         <div class="form-group">
           <label for="desc" class="col-sm-2 control-label">Description</label>
           <div class="col-sm-10">
-            <input type="text" class="form-control" id="desc" ng-model="partyDetails.party.description" ng-disabled="!partyDetails.isLoggedIn"/>
+            <input type="text" class="form-control" id="desc" ng-model="partyDetails.party.description" ng-disabled="!partyDetails.isLoggedIn" />
           </div>
         </div>
         <div class="form-group">
@@ -47,6 +47,18 @@
               Everyone was already invited
             </li>
           </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-xs-9 col-sm-9 col-md-9 col-lg-9">
+      <div class="party-details-maps">
+        <div class="angular-google-map-container">
+          <ui-gmap-google-map center="partyDetails.party.location || partyDetails.map.center" events="partyDetails.map.events" zoom="partyDetails.map.zoom">
+            <ui-gmap-marker coords="partyDetails.party.location" options="partyDetails.map.marker.options" events="partyDetails.map.marker.events" idkey="partyDetails.party._id">
+            </ui-gmap-marker>
+          </ui-gmap-google-map>
         </div>
       </div>
     </div>
