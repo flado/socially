@@ -9,17 +9,16 @@ angular.module('socially')
     })
     .state('partyDetails', {
       url: '/parties/:partyId',
-      template: '<party-details></party-details>',
+      template: '<party-details></party-details>'/*,
       resolve: {
         currentUser: ($q) => {
           if (Meteor.userId() === null) {
-
             return $q.reject('AUTH_REQUIRED');
           } else {
             return $q.resolve();
           }
         }
-      }
+      }*/
     });
   $urlRouterProvider.otherwise('/parties');
 })

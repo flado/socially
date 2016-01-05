@@ -88,6 +88,11 @@ Meteor.methods({
       throw new Meteor.Error(404, 'No such party'); // its private, but let's not tell this to the user
     }
 
+    //TODO: add party.ownerGoing property for the party owner if he responded
+    if (party.owner === this.userId) {
+      party.ownerGoing = rsvp;
+    }
+
     let rsvpIndex = _.indexOf(_.pluck(party.rsvps, 'user'), this.userId);
 
     if (rsvpIndex !== -1) {
@@ -99,7 +104,8 @@ Meteor.methods({
           'rsvps.user': this.userId
         }, {
           $set: {
-            'rsvps.$.rsvp': rsvp
+            'rsvps.$.rsvp': rsvp,
+            ownerGoing: party.ownerGoing
           }
         });
       } else {
@@ -107,7 +113,9 @@ Meteor.methods({
         // workaround, make a modifier that uses an index. this is
         // safe on the client since there's only one thread.
         let modifier = {
-          $set: {}
+          $set: {
+            ownerGoing: party.ownerGoing
+          }
         };
         modifier.$set['rsvps.' + rsvpIndex + '.rsvp'] = rsvp;
 
@@ -116,6 +124,9 @@ Meteor.methods({
     } else {
       // add new rsvp entry
       Parties.update(partyId, {
+        $set: {
+          ownerGoing: party.ownerGoing
+        },
         $push: {
           rsvps: {
             user: this.userId,

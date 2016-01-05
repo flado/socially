@@ -37,8 +37,11 @@ angular.module('socially').directive('partiesList', function() {
         users: () => {
           return Meteor.users.find({});
         },
-        currentUser: () => {
-          return Meteor.user();
+        currentUserId: () => {
+          return Meteor.userId();
+        },
+        isLoggedIn: () => {
+          return Meteor.userId() !== null;
         },
         partiesCount: () => {
           return Counts.get('numberOfParties');
@@ -71,6 +74,10 @@ angular.module('socially').directive('partiesList', function() {
 
       this.getUserById = (userId) => {
         return Meteor.users.findOne(userId);
+      };
+
+      this.rsvpIndex = (party) => {
+        return _.indexOf(_.pluck(party.rsvps, 'user'), Meteor.userId());
       };
 
       this.rsvp = (partyId, rsvp) => {

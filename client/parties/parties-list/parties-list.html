@@ -1,7 +1,7 @@
 <div class="container">
   <div class="jumbotron">
     <div class="row">
-      <div class="col-lg-9" ng-if="partiesList.currentUser">
+      <div class="col-lg-9" ng-show="partiesList.isLoggedIn">
         <form class="form-horizontal">
           <div class="form-group">
             <label for="partyname" class="col-sm-2 control-label">Party name:</label>
@@ -34,6 +34,9 @@
     </div>
     <div class="row">
       <div class="col-lg-9">
+        <div ng-hide="partiesList.isLoggedIn">
+          Log in to create a party!
+        </div>
         <h1>Parties:</h1>
         <div class="row">
           <div class="col-lg-9">
@@ -60,52 +63,73 @@
           <div class="panel-body">
             <ul>
               <li dir-paginate="party in partiesList.parties | itemsPerPage: partiesList.perPage" total-items="partiesList.partiesCount">
-                <span ng-if="partiesList.currentUser && party.owner === partiesList.currentUser._id">
-                <a ui-sref="partyDetails({partyId: party._id})">{{party | displayPartyName}}</a>
-              </span>
-                <span ng-if="!partiesList.currentUser || (partiesList.currentUser && party.owner !== partiesList.currentUser._id)">
-                {{party | displayPartyName}}
-              </span>
+                <!-- <span ng-if="partiesList.isLoggedIn && party.owner === partiesList.currentUserId"> -->
+                  <a ui-sref="partyDetails({partyId: party._id})">{{party | displayPartyName}}</a>
+                  <button class="btn btn-danger" ng-click="partiesList.removeParty(party)" ng-show="partiesList.isLoggedIn && party.owner === partiesList.currentUserId"> X </button>
+                <!-- </span> -->
+                <span ng-if="!partiesList.isLoggedIn || (partiesList.isLoggedIn && party.owner !== partiesList.currentUserId)">
+                  {{party | displayPartyName}}
+                </span>
                 <p>{{party.description}}</p>
-                <button ng-click="partiesList.removeParty(party)" ng-if="partiesList.currentUser && party.owner === partiesList.currentUser._id"> X </button>
-                <div class="btn-group" ng-if="partiesList.currentUser">
+                <div ng-hide="partiesList.isLoggedIn">
+                  <i>Sign in to RSVP for this party.</i>
+                </div>
+                <div class="well">
+                  <!-- <div class="btn-group" ng-show="partiesList.isLoggedIn">
                   <button type="button" class="btn btn-default" ng-click="partiesList.rsvp(party._id, 'yes')">I'm going</button>
                   <button type="button" class="btn btn-default" ng-click="partiesList.rsvp(party._id, 'maybe')">Maybe</button>
                   <button type="button" class="btn btn-default" ng-click="partiesList.rsvp(party._id, 'no')">No</button>
-                </div>
-                <div>
-                  <label>Who is coming:</label>
-                  <div>Yes: <span class="badge">{{ '' + (party.rsvps | filter:{rsvp:'yes'}).length }} </span>
-                    <ul>
-                      <li ng-repeat="rsvp in party.rsvps | filter:{rsvp:'yes'}">
-                        {{ partiesList.getUserById(rsvp.user) | displayName }}
-                      </li>
-                    </ul>
+                </div> -->
+                  <span ng-init="rsvpIndex = partiesList.rsvpIndex(party)"></span>
+                  <div class="btn-group" ng-show="partiesList.isLoggedIn">
+                    <div ng-if="rsvpIndex > -1">
+                      <label class="btn btn-success" ng-model="party.rsvps[rsvpIndex].rsvp" uib-btn-radio="'yes'" ng-click="partiesList.rsvp(party._id, 'yes')">I'm going</label>
+                      <label class="btn btn-success" ng-model="party.rsvps[rsvpIndex].rsvp" uib-btn-radio="'maybe'" ng-click="partiesList.rsvp(party._id, 'maybe')">Maybe</label>
+                      <label class="btn btn-success" ng-model="party.rsvps[rsvpIndex].rsvp" uib-btn-radio="'no'" ng-click="partiesList.rsvp(party._id, 'no')">No</label>
+                    </div>
+                    <div ng-if="rsvpIndex == -1">
+                      <label class="btn btn-success" ng-model="rsvp" uib-btn-radio="'yes'" ng-click="partiesList.rsvp(party._id, 'yes')">I'm going</label>
+                      <label class="btn btn-success" ng-model="rsvp" uib-btn-radio="'maybe'" ng-click="partiesList.rsvp(party._id, 'maybe')">Maybe</label>
+                      <label class="btn btn-success" ng-model="rsvp" uib-btn-radio="'no'" ng-click="partiesList.rsvp(party._id, 'no')">No</label>
+                    </div>
                   </div>
-                  <div>Maybe: <span class="badge"> {{ '' + (party.rsvps | filter:{rsvp:'maybe'}).length }}</span>
-                    <ul>
-                      <li ng-repeat="rsvp in party.rsvps | filter:{rsvp:'maybe'}">
-                        {{ partiesList.getUserById(rsvp.user) | displayName }}
-                      </li>
-                    </ul>
-                  </div>
-                  <div>No: <span class="badge"> {{ '' + (party.rsvps | filter:{rsvp:'no'}).length }}</span>
-                    <ul>
-                      <li ng-repeat="rsvp in party.rsvps | filter:{rsvp:'no'}">
-                        {{ partiesList.getUserById(rsvp.user) | displayName }}
-                      </li>
-                    </ul>
+                  <div>
+                    <label>Who is coming:</label>
+                    <div>Yes: <span class="badge">{{ '' + (party.rsvps | filter:{rsvp:'yes'}).length }} </span>
+                      <ul>
+                        <li ng-repeat="rsvp in party.rsvps | filter:{rsvp:'yes'}">
+                          {{ partiesList.getUserById(rsvp.user) | displayName }}
+                        </li>
+                      </ul>
+                    </div>
+                    <div>Maybe: <span class="badge"> {{ '' + (party.rsvps | filter:{rsvp:'maybe'}).length }}</span>
+                      <ul>
+                        <li ng-repeat="rsvp in party.rsvps | filter:{rsvp:'maybe'}">
+                          {{ partiesList.getUserById(rsvp.user) | displayName }}
+                        </li>
+                      </ul>
+                    </div>
+                    <div>No: <span class="badge"> {{ '' + (party.rsvps | filter:{rsvp:'no'}).length }}</span>
+                      <ul>
+                        <li ng-repeat="rsvp in party.rsvps | filter:{rsvp:'no'}">
+                          {{ partiesList.getUserById(rsvp.user) | displayName }}
+                        </li>
+                      </ul>
+                    </div>
                   </div>
                 </div>
                 <span ng-init="invitedUsers = partiesList.outstandingInvitations(party)"></span>
-                <div ng-if="invitedUsers.length > 0">
+                <div class="well" ng-if="invitedUsers.length > 0">
+                  <label>Users who not responded:</label>
                   <br>
-                  <ul>
-                    <label>Users who not responded:</label>
+                  <ul ng-if="!party.public">
                     <li ng-repeat="invitedUser in invitedUsers">
                       {{ invitedUser | displayName }}
                     </li>
                   </ul>
+                </div>
+                <div class="alert alert-info" ng-if="party.public">
+                  Everyone is invited
                 </div>
                 <p> <small>Posted by <i>{{partiesList.getPartyCreator(party) | displayName}}</i></small></p>
               </li>
