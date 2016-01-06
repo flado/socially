@@ -20,6 +20,9 @@ angular.module('socially').directive('partyDetails', function() {
         },
         isLoggedIn: () => {
           return Meteor.userId() !== null;
+        },
+        currentUserId: () => {
+          return Meteor.userId();
         }
       });
 
@@ -31,7 +34,7 @@ angular.module('socially').directive('partyDetails', function() {
         zoom: 8,
         events: {
           click: (mapModel, eventName, originalEventArgs) => {
-            if (!this.party) {
+            if (!this.party || !this.isLoggedIn || (this.party.owner !== this.currentUserId)) {
               return;
             }
 
