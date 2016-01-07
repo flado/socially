@@ -3,7 +3,7 @@ angular.module('socially').directive('partiesList', function() {
     restrict: 'E',
     templateUrl: 'client/parties/parties-list/parties-list.html',
     controllerAs: 'partiesList',
-    controller: function($scope, $reactive) {
+    controller: function($scope, $reactive, $modal) {
 
       $reactive(this).attach($scope);
       this.newParty = {};
@@ -21,6 +21,62 @@ angular.module('socially').directive('partiesList', function() {
           latitude: 45,
           longitude: -73
         },
+        options: {
+          maxZoom: 10,
+          styles: [{
+            'featureType': 'administrative',
+            'elementType': 'labels.text.fill',
+            'stylers': [{
+              'color': '#444444'
+            }]
+          }, {
+            'featureType': 'landscape',
+            'elementType': 'all',
+            'stylers': [{
+              'color': '#f2f2f2'
+            }]
+          }, {
+            'featureType': 'poi',
+            'elementType': 'all',
+            'stylers': [{
+              'visibility': 'off'
+            }]
+          }, {
+            'featureType': 'road',
+            'elementType': 'all',
+            'stylers': [{
+              'saturation': -100
+            }, {
+              'lightness': 45
+            }]
+          }, {
+            'featureType': 'road.highway',
+            'elementType': 'all',
+            'stylers': [{
+              'visibility': 'simplified'
+            }]
+          }, {
+            'featureType': 'road.arterial',
+            'elementType': 'labels.icon',
+            'stylers': [{
+              'visibility': 'off'
+            }]
+          }, {
+            'featureType': 'transit',
+            'elementType': 'all',
+            'stylers': [{
+              'visibility': 'off'
+            }]
+          }, {
+            'featureType': 'water',
+            'elementType': 'all',
+            'stylers': [{
+              'color': '#46bcec'
+            }, {
+              'visibility': 'on'
+            }]
+          }]
+        },
         zoom: 8
       };
       this.subscribe('users');
@@ -36,9 +92,7 @@ angular.module('socially').directive('partiesList', function() {
       this.helpers({
         parties: () => {
           return Parties.find({}, {
-            sort: {
-              name: 1
-            }
+            sort: this.getReactively('sort')
           });
         },
         users: () => {
@@ -56,8 +110,9 @@ angular.module('socially').directive('partiesList', function() {
       });
 
       this.updateSort = (val) => {
+        let orderValue = val ? parseInt(val) : parseInt(this.orderProperty);
         this.sort = {
-          name: parseInt( /*this.orderProperty*/ val) //1 or -1
+          name: orderValue
         };
       };
 
@@ -87,6 +142,27 @@ angular.module('socially').directive('partiesList', function() {
         return _.indexOf(_.pluck(party.rsvps, 'user'), Meteor.userId());
       };
 
+      this.openAddNewPartyModal = function() {
+        $modal.open({
+          animation: true,
+          template: '<add-new-party-modal></add-new-party-modal>'
+        });
+      };
+
+      this.isRSVP = (rsvp, party) => {
+        if (Meteor.userId() === null) {
+          return false;
+        }
+
+        let rsvpIndex = party.myRsvpIndex;
+        rsvpIndex = rsvpIndex || _.indexOf(_.pluck(party.rsvps, 'user'), Meteor.userId());
+
+        if (rsvpIndex !== -1) {
+          party.myRsvpIndex = rsvpIndex;
+          return party.rsvps[rsvpIndex].rsvp === rsvp;
+        }
+      }
+
       this.rsvp = (partyId, rsvp) => {
         Meteor.call('rsvp', partyId, rsvp, (error) => {
           if (error) {
@@ -103,21 +179,6 @@ angular.module('socially').directive('partiesList', function() {
             user: user._id
           }));
         });
-      };
-
-      this.addParty = () => {
-        console.log('>> userId: ' + Meteor.userId());
-        if (Meteor.userId() && !_.isEmpty(this.newParty.name) && !_.isEmpty(this.newParty.description)) {
-          this.newParty.owner = Meteor.user()._id;
-          if (Meteor.user().username) {
-            this.newParty.username = Meteor.user().username;
-          } else if (Meteor.user().emails[0]) {
-            this.newParty.username = Meteor.user().emails[0].address;
-          }
-          this.newParty.rsvps = [];
-          Parties.insert(this.newParty);
-          this.newParty = {};
-        }
       };
 
       this.pageChanged = (newPage) => {

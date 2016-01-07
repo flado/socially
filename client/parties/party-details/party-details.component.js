@@ -55,6 +55,9 @@ angular.module('socially').directive('partyDetails', function() {
           },
           events: {
             dragend: (marker, eventName, args) => {
+              if (!this.party || !this.isLoggedIn || (this.party.owner !== this.currentUserId)) {
+                return;
+              }
               if (!this.party.location) {
                 this.party.location = {};
               }
