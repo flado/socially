@@ -26,5 +26,6 @@ check
 email
 angularui:angular-google-maps
 less
-twbs:bootstrap
 angularui:angular-ui-bootstrap
+angular:angular-material
+planettraining:material-design-icons

@@ -6,6 +6,7 @@
     "Email": true,
     "angular": true,
     "_": true,
+    "Accounts": true,
     "check": true,
     "Parties": true
   }

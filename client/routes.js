@@ -9,16 +9,28 @@ angular.module('socially')
     })
     .state('partyDetails', {
       url: '/parties/:partyId',
-      template: '<party-details></party-details>'/*,
-      resolve: {
-        currentUser: ($q) => {
-          if (Meteor.userId() === null) {
-            return $q.reject('AUTH_REQUIRED');
-          } else {
-            return $q.resolve();
-          }
-        }
-      }*/
+      template: '<party-details></party-details>'
+        /*,
+              resolve: {
+                currentUser: ($q) => {
+                  if (Meteor.userId() === null) {
+                    return $q.reject('AUTH_REQUIRED');
+                  } else {
+                    return $q.resolve();
+                  }
+                }
+              }*/
+    }).state('login', {
+      url: '/login',
+      template: '<login></login>'
+    })
+    .state('register', {
+      url: '/register',
+      template: '<register></register>'
+    })
+    .state('resetpw', {
+      url: '/resetpw',
+      template: '<resetpw></resetpw>'
     });
   $urlRouterProvider.otherwise('/parties');
 })
