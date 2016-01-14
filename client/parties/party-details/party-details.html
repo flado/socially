@@ -6,21 +6,21 @@
     <form class="form-horizontal">
       <div class="form-group">
         <label>Party Name</label>
-        <input ng-model="partyDetails.party.name" ng-disabled="!partyDetails.isLoggedIn || partyDetails.party.owner != partyDetails.currentUserId" type="text" class="form-control">
+        <input ng-model="partyDetails.party.name" ng-disabled="!partyDetails.canEdit" type="text" class="form-control">
       </div>
       <div class="form-group">
         <label>Description</label>
-        <input ng-model="partyDetails.party.description" ng-disabled="!partyDetails.isLoggedIn || partyDetails.party.owner != partyDetails.currentUserId" type="text" class="form-control">
+        <input ng-model="partyDetails.party.description" ng-disabled="!partyDetails.canEdit" type="text" class="form-control">
       </div>
       <div class="form-group">
         <label>Is public</label>
-        <input type="checkbox" ng-model="partyDetails.party.public" ng-disabled="!partyDetails.isLoggedIn || partyDetails.party.owner != partyDetails.currentUserId">
+        <input type="checkbox" ng-model="partyDetails.party.public" ng-disabled="!partyDetails.canEdit">
       </div>
-      <div class="form-group" ng-show="partyDetails.isLoggedIn && partyDetails.party.owner == partyDetails.currentUserId">
+      <div class="form-group" ng-if="partyDetails.canEdit">
         <button ng-click="partyDetails.save()" class="btn btn-primary">Save</button>
       </div>
     </form>
-    <div class="ma-invite-list" ng-show="partyDetails.canInvite()">
+    <div class="ma-invite-list" ng-if="partyDetails.canInvite">
       <h3>
         Users to invite:
       </h3>
@@ -45,68 +45,3 @@
     </div>
   </div>
 </div>
-<!-- 
-<div>
-  <div class="row">
-    <div class="col-xs-9 col-sm-9 col-md-9 col-lg-9">
-      <form class="form-horizontal">
-        <div class="form-group">
-          <label for="partyname" class="col-sm-2 control-label">Party name:</label>
-          <div class="col-sm-10">
-            <input type="text" class="form-control" id="partyname" ng-model="partyDetails.party.name" ng-disabled="!partyDetails.isLoggedIn || partyDetails.party.owner !== partyDetails.currentUserId" />
-          </div>
-        </div>
-        <div class="form-group">
-          <label for="desc" class="col-sm-2 control-label">Description</label>
-          <div class="col-sm-10">
-            <input type="text" class="form-control" id="desc" ng-model="partyDetails.party.description" ng-disabled="!partyDetails.isLoggedIn  || partyDetails.party.owner !== partyDetails.currentUserId" />
-          </div>
-        </div>
-        <div class="form-group">
-          <div class="col-sm-offset-2 col-sm-10">
-            <div class="checkbox">
-              <label>
-                <input type="checkbox" ng-model="partyDetails.party.public" ng-disabled="!partyDetails.isLoggedIn || partyDetails.party.owner !== partyDetails.currentUserId"> Public Party?
-              </label>
-            </div>
-          </div>
-        </div>
-        <div class="form-group">
-          <div class="col-sm-offset-2 col-sm-10">
-            <button ng-click="partyDetails.save()" class="btn btn-primary" ng-disabled="!partyDetails.isLoggedIn || partyDetails.party.owner !== partyDetails.currentUserId">Save</button>
-          </div>
-        </div>
-      </form>
-    </div>
-  </div>
-  <div class="row" ng-show="partyDetails.canInvite()">
-    <div class="col-xs-9 col-sm-9 col-md-9 col-lg-9">
-      <div class="panel panel-default">
-        <div class="panel-heading">
-          <h3 class="panel-title">Users to invite:</h3>
-        </div>
-        <div class="panel-body">
-          <ul class="list-group">
-            <li class="list-group-item" ng-repeat="user in partyDetails.users | uninvited:partyDetails.party">
-              {{ user | displayName }}
-              <button ng-click="partyDetails.invite(user)">Invite</button>
-            </li>
-            <li class="list-group-item" ng-if="(partyDetails.users | uninvited: partyDetails.party).length === 0">
-              Everyone was already invited
-            </li>
-          </ul>
-        </div>
-      </div>
-    </div>
-  </div>
-  <div class="row">
-    <div class="col-xs-9 col-sm-9 col-md-9 col-lg-9">
-        <div class="angular-google-map-container">
-          <ui-gmap-google-map center="partyDetails.party.location || partyDetails.map.center" events="partyDetails.map.events" zoom="partyDetails.map.zoom">
-            <ui-gmap-marker coords="partyDetails.party.location" options="partyDetails.map.marker.options" events="partyDetails.map.marker.events" idkey="partyDetails.party._id">
-            </ui-gmap-marker>
-          </ui-gmap-google-map>
-        </div>
-    </div>
-  </div>
-</div> -->

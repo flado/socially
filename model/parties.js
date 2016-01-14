@@ -5,10 +5,12 @@ Parties.allow({
     return userId && party.owner === userId;
   },
   update: function(userId, party, fields, modifier) {
-    return userId && party.owner === userId;
+    //allow public not-owned parties to be updated by anyone
+    return (party.public && !party.owner) || (userId && party.owner === userId);
   },
   remove: function(userId, party) {
-    return userId && party.owner === userId;
+    //allow public not-owned parties to be updated by anyone
+    return (party.public && !party.owner) || (userId && party.owner === userId);
   }
 });
 
@@ -89,7 +91,7 @@ Meteor.methods({
     }
 
     //TODO: add party.ownerGoing property for the party owner if he responded
-    if (party.owner === this.userId) {
+    if (party.owner && (party.owner === this.userId)) {
       party.ownerGoing = rsvp;
     }
 
@@ -99,24 +101,28 @@ Meteor.methods({
       // update existing rsvp entry
       if (Meteor.isServer) {
         // update the appropriate rsvp entry with $
+        let modifier = {
+          $set: {
+            'rsvps.$.rsvp': rsvp
+          }
+        };
+        if (party.owner && party.owner !== null) {
+          modifier.$set.ownerGoing = party.ownerGoing;
+        }
         Parties.update({
           _id: partyId,
           'rsvps.user': this.userId
-        }, {
-          $set: {
-            'rsvps.$.rsvp': rsvp,
-            ownerGoing: party.ownerGoing
-          }
-        });
+        }, modifier);
       } else {
         // minimongo doesn't yet support $ in modifier. as a temporary
         // workaround, make a modifier that uses an index. this is
         // safe on the client since there's only one thread.
         let modifier = {
-          $set: {
-            ownerGoing: party.ownerGoing
-          }
+          $set: {}
         };
+        if (party.owner && party.owner !== null) {
+          modifier.$set.ownerGoing = party.ownerGoing;
+        }
         modifier.$set['rsvps.' + rsvpIndex + '.rsvp'] = rsvp;
 
         Parties.update(partyId, modifier);

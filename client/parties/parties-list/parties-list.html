@@ -1,29 +1,45 @@
+<div class="row h100" ng-if="partiesList.partiesCount === 0">
+  <div class="col-md-6 ma-parties-col">
+    <div class="row search-form">
+      <div class="col-xs-10">
+        <div class="well well-lg">
+          No parties available.
+          <br/>
+          <span ng-if="!partiesList.isLoggedIn"> Please login and create new parties.</span>
+          <span ng-if="partiesList.isLoggedIn"> Please add new parties.</span>
+        </div>
+      </div>
+      <div class="col-xs-2 ma-add-button-container">
+        <button ng-show="partiesList.isLoggedIn" class="btn" ng-click="partiesList.openAddNewPartyModal()"><i class="fa fa-plus"></i></button>
+      </div>
+    </div>
+  </div>
+</div>
 <div class="row h100">
   <div class="col-md-6 ma-parties-col">
-    <div class="row">
-      <div class="col-xs-8">
-        <form class="form-inline search-form">
-          <div class="form-group">
-            <label class="sr-only" for="search">Search</label>
-            <div class="input-group">
-              <div class="input-group-addon"><i class="glyphicon glyphicon-search"></i></div>
-              <input type="text" ng-model="partiesList.searchText" placeholder="Search" id="search" class="form-control">
-            </div>
-            <div class="btn-group ma-add-button-container">
-              <label class="btn btn-success" ng-model="partiesList.orderProperty" uib-btn-radio="'1'" ng-click="partiesList.updateSort('1')">Ascending</label>
-              <label class="btn btn-success" ng-model="partiesList.orderProperty" uib-btn-radio="'-1'" ng-click="partiesList.updateSort('-1')">Descending</label>
+    <div class="row search-form">
+      <div class="col-xs-10">
+        <div class="row">
+          <div class="col-xs-8">
+            <form class="form-inline search-form">
+              <div class="form-group">
+                <label class="sr-only" for="search">Search</label>
+                <div class="input-group">
+                  <div class="input-group-addon"><i class="glyphicon glyphicon-search"></i></div>
+                  <input type="text" ng-model="partiesList.searchText" placeholder="Search" id="search" class="form-control">
+                </div>
+              </div>
+            </form>
+          </div>
+          <div class="col-xs-4">
+            <div class="btn-group" ng-show="partiesList.partiesCount > 1">
+              <label class="btn btn-success" ng-model="partiesList.orderProperty" uib-btn-radio="'1'" ng-click="partiesList.updateSort('1')"><i class="glyphicon glyphicon-chevron-up"></i></label>
+              <label class="btn btn-success" ng-model="partiesList.orderProperty" uib-btn-radio="'-1'" ng-click="partiesList.updateSort('-1')"><i class="glyphicon glyphicon-chevron-down"></i></label>
             </div>
           </div>
-          <!-- <div class="form-group">
-            <label class="sr-only" for="sort-order">Sort Order</label>
-            <select ng-model="partiesList.orderProperty" ng-change="partiesList.updateSort()">
-              <option value="1">Ascending</option>
-              <option value="-1">Descending</option>
-            </select>
-          </div> -->
-        </form>
+        </div>
       </div>
-      <div class="col-xs-4 ma-add-button-container">
+      <div class="col-xs-2 ma-add-button-container">
         <button ng-show="partiesList.isLoggedIn" class="btn" ng-click="partiesList.openAddNewPartyModal()"><i class="fa fa-plus"></i></button>
       </div>
     </div>
@@ -99,158 +115,3 @@
     </div>
   </div>
 </div>
-<!--
-<div>
-  <div class="jumbotron">
-    <div class="row">
-      <div class="col-lg-9" ng-show="partiesList.isLoggedIn">
-        <form class="form-horizontal">
-          <div class="form-group">
-            <label for="partyname" class="col-sm-2 control-label">Party name:</label>
-            <div class="col-sm-10">
-              <input type="text" class="form-control" id="partyname" ng-model="partiesList.newParty.name" />
-            </div>
-          </div>
-          <div class="form-group">
-            <label for="desc" class="col-sm-2 control-label">Description</label>
-            <div class="col-sm-10">
-              <input type="text" class="form-control" id="desc" ng-model="partiesList.newParty.description" />
-            </div>
-          </div>
-          <div class="form-group">
-            <div class="col-sm-offset-2 col-sm-10">
-              <div class="checkbox">
-                <label>
-                  <input type="checkbox" ng-model="partiesList.newParty.public"> Public Party?
-                </label>
-              </div>
-            </div>
-          </div>
-          <div class="form-group">
-            <div class="col-sm-offset-2 col-sm-10">
-              <button ng-click="partiesList.addParty()" class="btn btn-default">Add party</button>
-            </div>
-          </div>
-        </form>
-      </div>
-    </div>
-    <div class="row">
-      <div class="col-lg-9">
-        <div ng-hide="partiesList.isLoggedIn">
-          Log in to create a party!
-        </div>
-        <h1>Parties:</h1>
-        <div class="row">
-          <div class="col-lg-9">
-            <form class="form-horizontal">
-              <div class="form-group">
-                <label for="searchBy" class="col-sm-2 control-label">Search: </label>
-                <div class="col-sm-10">
-                  <input type="text" class="form-control" ng-model="partiesList.searchText" placeholder="Search here ...">
-                </div>
-              </div>
-              <div class="form-group">
-                <label for="orderby" class="col-sm-2 control-label">Order: </label>
-                <div class="col-sm-10">
-                  <div class="btn-group" id="orderby">
-                    <button type="button" ng-click="partiesList.updateSort('1')" class="btn btn-default">Ascending</button>
-                    <button type="button" ng-click="partiesList.updateSort('-1')" class="btn btn-default">Descending</button>
-                  </div>
-                </div>
-              </div>
-            </form>
-          </div>
-        </div>
-        <div class="panel panel-default">
-          <div class="panel-body">
-            <ul>
-              <li dir-paginate="party in partiesList.parties | itemsPerPage: partiesList.perPage" total-items="partiesList.partiesCount">
-
-                <a ui-sref="partyDetails({partyId: party._id})">{{party | displayPartyName}}</a>
-                <button class="btn btn-danger" ng-click="partiesList.removeParty(party)" ng-show="partiesList.isLoggedIn && party.owner === partiesList.currentUserId"> X </button>
-
-                <span ng-if="!partiesList.isLoggedIn || (partiesList.isLoggedIn && party.owner !== partiesList.currentUserId)">
-                  {{party | displayPartyName}}
-                </span>
-                <p>{{party.description}}</p>
-                <div ng-hide="partiesList.isLoggedIn">
-                  <i>Sign in to RSVP for this party.</i>
-                </div>
-                <div class="well">
-
-                  <span ng-init="rsvpIndex = partiesList.rsvpIndex(party)"></span>
-                  <div class="btn-group" ng-show="partiesList.isLoggedIn">
-                    <div ng-if="rsvpIndex > -1">
-                      <label class="btn btn-success" ng-model="party.rsvps[rsvpIndex].rsvp" uib-btn-radio="'yes'" ng-click="partiesList.rsvp(party._id, 'yes')">I'm going</label>
-                      <label class="btn btn-success" ng-model="party.rsvps[rsvpIndex].rsvp" uib-btn-radio="'maybe'" ng-click="partiesList.rsvp(party._id, 'maybe')">Maybe</label>
-                      <label class="btn btn-success" ng-model="party.rsvps[rsvpIndex].rsvp" uib-btn-radio="'no'" ng-click="partiesList.rsvp(party._id, 'no')">No</label>
-                    </div>
-                    <div ng-if="rsvpIndex == -1">
-                      <label class="btn btn-success" ng-model="rsvp" uib-btn-radio="'yes'" ng-click="partiesList.rsvp(party._id, 'yes')">I'm going</label>
-                      <label class="btn btn-success" ng-model="rsvp" uib-btn-radio="'maybe'" ng-click="partiesList.rsvp(party._id, 'maybe')">Maybe</label>
-                      <label class="btn btn-success" ng-model="rsvp" uib-btn-radio="'no'" ng-click="partiesList.rsvp(party._id, 'no')">No</label>
-                    </div>
-                  </div>
-                  <div>
-                    <label>Who is coming:</label>
-                    <div>Yes: <span class="badge">{{ '' + (party.rsvps | filter:{rsvp:'yes'}).length }} </span>
-                      <ul>
-                        <li ng-repeat="rsvp in party.rsvps | filter:{rsvp:'yes'}">
-                          {{ partiesList.getUserById(rsvp.user) | displayName }}
-                        </li>
-                      </ul>
-                    </div>
-                    <div>Maybe: <span class="badge"> {{ '' + (party.rsvps | filter:{rsvp:'maybe'}).length }}</span>
-                      <ul>
-                        <li ng-repeat="rsvp in party.rsvps | filter:{rsvp:'maybe'}">
-                          {{ partiesList.getUserById(rsvp.user) | displayName }}
-                        </li>
-                      </ul>
-                    </div>
-                    <div>No: <span class="badge"> {{ '' + (party.rsvps | filter:{rsvp:'no'}).length }}</span>
-                      <ul>
-                        <li ng-repeat="rsvp in party.rsvps | filter:{rsvp:'no'}">
-                          {{ partiesList.getUserById(rsvp.user) | displayName }}
-                        </li>
-                      </ul>
-                    </div>
-                  </div>
-                </div>
-                <span ng-init="invitedUsers = partiesList.outstandingInvitations(party)"></span>
-                <div class="well" ng-if="invitedUsers.length > 0">
-                  <label>Users who not responded:</label>
-                  <br>
-                  <ul ng-if="!party.public">
-                    <li ng-repeat="invitedUser in invitedUsers">
-                      {{ invitedUser | displayName }}
-                    </li>
-                  </ul>
-                </div>
-                <div class="alert alert-info" ng-if="party.public">
-                  Everyone is invited
-                </div>
-                <p> <small>Posted by <i>{{partiesList.getPartyCreator(party) | displayName}}</i></small></p>
-              </li>
-            </ul>
-          </div>
-        </div>
-      </div>
-    </div>
-    <div class="row">
-      <div class="col-lg-9">
-        <div class="angular-google-map-container">
-          <ui-gmap-google-map center="partiesList.party.location || partiesList.map.center" zoom="partiesList.map.zoom">
-            <ui-gmap-markers models="partiesList.parties" coords="'location'" fit="true" idkey="'_id'" doRebuildAll="true">
-            </ui-gmap-markers>
-          </ui-gmap-google-map>
-        </div>
-      </div>
-    </div>
-    <div class="row">
-      <div class="col-lg-6">
-        <dir-pagination-controls on-page-change="partiesList.pageChanged(newPageNumber)" boundary-links="true"></dir-pagination-controls>
-      </div>
-    </div>
-  </div>
-</div>
- -->

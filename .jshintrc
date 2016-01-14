@@ -5,6 +5,7 @@
     "Counts": true,
     "Email": true,
     "angular": true,
+    "faker": true,
     "_": true,
     "check": true,
     "Parties": true
