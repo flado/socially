@@ -41,7 +41,7 @@ angular.module('socially').directive('partyDetails', function() {
         events: {
           click: (mapModel, eventName, originalEventArgs) => {
             // if (!this.party || !this.isLoggedIn || (this.party.owner && (this.party.owner !== this.currentUserId))) {
-            if (!this.canEdit()) {
+            if (!this.canEdit) {
               return;
             }
 
